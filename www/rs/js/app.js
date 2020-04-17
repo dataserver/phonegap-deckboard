@@ -22,21 +22,7 @@ var physicalScreenWidth = window.screen.width * window.devicePixelRatio;
 var physicalScreenHeight = window.screen.height * window.devicePixelRatio;
 var server_url = 'https://google.com';
 
-
-$(".js-scan-qrcode").click(function(e){
-    let target_url = null;
-
-    // cordova.plugins.barcodeScanner.scan(
-    //     function (result) {
-    //         target_url = result.text;
-    //     },
-    //     function (error) {
-    //         alert("Scanning failed: " + error);
-    //     },
-    //     barcodeScannerOptions
-    // );
-    // alert(target_url);
-    
+function load_panel(url) {
     $.ajax({
         dataType: "json",
         url: 'http://192.168.15.10/deckboard.php'
@@ -69,10 +55,7 @@ $(".js-scan-qrcode").click(function(e){
                 }
             }
             html += "</tr></table>";
-            $("#main-carousel").append(`<div class="carousel-cell">
-            <h3>${panel.title}</h3>
-            ${html}</div>
-            `);
+            $("#main-carousel").append(`<div class="carousel-cell"><h3>${panel.title}</h3> ${html} </div>`);
 
         }
         $('#main-carousel').flickity({
@@ -82,6 +65,22 @@ $(".js-scan-qrcode").click(function(e){
             prevNextButtons: false
         });
     });
+}
+
+$(".js-scan-qrcode").click(function(e){
+    let target_url = null;
+
+    cordova.plugins.barcodeScanner.scan(
+        function (result) {
+            target_url = result.text;
+            load_panel(target_url);
+        },
+        function (error) {
+            alert("Scanning failed: " + error);
+        },
+        barcodeScannerOptions
+    );
+    //alert(target_url);
 });
 
 $(document).on("click", ".js-show-device-info", function(e){
