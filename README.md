@@ -1,1 +1,1 @@
-Simple monthly bills logger
+button deck companion
