@@ -22,10 +22,13 @@ var physicalScreenWidth = window.screen.width * window.devicePixelRatio;
 var physicalScreenHeight = window.screen.height * window.devicePixelRatio;
 var server_url = 'https://google.com';
 
-function load_panel(url) {
+function load_panel(url = "") {
+    if (url =="") {
+        url = 'http://192.168.15.10/deckboard.php';
+    }
     $.ajax({
         dataType: "json",
-        url: 'http://192.168.15.10/deckboard.php'
+        url: url
     }).done(function(data){
         let panels = data.panel.items;
         if ($('#main-carousel').hasClass('flickity-enabled')) {
