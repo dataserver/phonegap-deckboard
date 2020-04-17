@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget 
+    xmlns="http://www.w3.org/ns/widgets" 
+    xmlns:gap="http://phonegap.com/ns/1.0"
+    id="com.github.dataserver.deckboard" 
+    version="2" 
+>
+    <name>Deckboard</name>
+    <description>
+        Deckboard
+    </description>
+    <author email="dataserver@users.noreply.github.com" href="http://dataserver.github.io">
+        dataserver
+    </author>
+    <content src="index.html" />
+    <allow-intent href="*" />
+    <allow-navigation href="*" />
+    <access origin="*" />
+    
+    <preference name="phonegap-version" value="cli-7.1.0" />
+    <preference name="KeyboardDisplayRequiersUserAction" value="false"/>
+
+    <plugin name="cordova-plugin-whitelist" spec="1.3.3" source="npm" />
+    <plugin name="phonegap-plugin-barcodescanner" spec="8.0.1" source="npm" />
+
+    <platform name="android">
+        <splash src="res/screen/android/drawable-land-hdpi/screen.png" density="land-hdpi"/>
+        <splash src="res/screen/android/drawable-land-ldpi/screen.png" density="land-ldpi"/>
+        <splash src="res/screen/android/drawable-land-mdpi/screen.png" density="land-mdpi"/>
+        <splash src="res/screen/android/drawable-land-xhdpi/screen.png" density="land-xhdpi"/>
+        <splash src="res/screen/android/drawable-land-xxhdpi/screen.png" density="land-xxhdpi"/>
+        <splash src="res/screen/android/drawable-land-xxxhdpi/screen.png" density="land-xxxhdpi"/>
+        <splash src="res/screen/android/drawable-hdpi/screen.png" density="port-hdpi"/>
+        <splash src="res/screen/android/drawable-ldpi/screen.png" density="port-ldpi"/>
+        <splash src="res/screen/android/drawable-mdpi/screen.png" density="port-mdpi"/>
+        <splash src="res/screen/android/drawable-xhdpi/screen.png" density="port-xhdpi"/>
+        <splash src="res/screen/android/drawable-xxhdpi/screen.png" density="port-xxhdpi"/>
+        <splash src="res/screen/android/drawable-xxxhdpi/screen.png" density="port-xxxhdpi"/>
+    </platform>
+    <icon src="res/screen/android/drawable-ldpi/icon.png" platform="android" qualifier="ldpi" />
+    <icon src="res/screen/android/drawable-mdpi/icon.png" platform="android" qualifier="mdpi" />
+    <icon src="res/screen/android/drawable-hdpi/icon.png" platform="android" qualifier="hdpi" />
+    <icon src="res/screen/android/drawable-xhdpi/icon.png" platform="android" qualifier="xhdpi" />
+    <icon src="res/screen/android/drawable-xxhdpi/icon.png" platform="android" qualifier="xxhdpi" />
+    <icon src="res/screen/android/drawable-xxxhdpi/icon.png" platform="android" qualifier="xxxhdpi" />
+
+</widget>

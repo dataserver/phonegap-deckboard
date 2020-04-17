@@ -1,0 +1,1 @@
+Simple monthly bills logger

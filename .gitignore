@@ -1,0 +1,7 @@
+# Cordova
+/platforms
+/plugins
+/hooks
+sqlite.sqlite3
+
+# res
