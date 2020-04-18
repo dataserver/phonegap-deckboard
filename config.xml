@@ -24,11 +24,22 @@
     <plugin name="phonegap-plugin-barcodescanner" spec="8.0.1" source="npm" />
 
     <platform name="android">
+        <splash src="res/screen/android/mipmap-hdpi/ic_launcher.png" density="port-hdpi"/>
+        <splash src="res/screen/android/mipmap-ldpi/ic_launcher.png" density="port-ldpi"/>
+        <splash src="res/screen/android/mipmap-mdpi/ic_launcher.png" density="port-mdpi"/>
+        <splash src="res/screen/android/mipmap-xhdpi/ic_launcher.png" density="port-xhdpi"/>
+        <splash src="res/screen/android/mipmap-xxhdpi/ic_launcher.png" density="port-xxhdpi"/>
+        <splash src="res/screen/android/mipmap-xxxhdpi/ic_launcher.png" density="port-xxxhdpi"/>
         <icon src="res/screen/android/mipmap-mdpi/ic_launcher.png" density="mdpi" />
         <icon src="res/screen/android/mipmap-hdpi/ic_launcher.png" density="hdpi" />
         <icon src="res/screen/android/mipmap-xhdpi/ic_launcher.png" density="xhdpi" />
         <icon src="res/screen/android/mipmap-xxhdpi/ic_launcher.png" density="xxhdpi" />
         <icon src="res/screen/android/mipmap-xxxhdpi/ic_launcher.png" density="xxxhdpi" />
     </platform>
+    <icon src="res/screen/android/mipmap-mdpi/ic_launcher.png" platform="android" qualifier="mdpi" />
+    <icon src="res/screen/android/mipmap-hdpi/ic_launcher.png" platform="android" qualifier="hdpi" />
+    <icon src="res/screen/android/mipmap-xhdpi/ic_launcher.png" platform="android" qualifier="xhdpi" />
+    <icon src="res/screen/android/mipmap-xxhdpi/ic_launcher.png" platform="android" qualifier="xxhdpi" />
+    <icon src="res/screen/android/mipmap-xxxhdpi/ic_launcher.png" platform="android" qualifier="xxxhdpi" />
 
 </widget>
