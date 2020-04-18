@@ -23,51 +23,52 @@ var physicalScreenHeight = window.screen.height * window.devicePixelRatio;
 var server_url = 'https://google.com';
 
 function load_panel(url = "") {
-    if (url =="") {
-        url = 'http://192.168.15.10/deckboard.php';
-    }
-    $.ajax({
-        dataType: "json",
-        url: url
-    }).done(function(data){
-        let panels = data.panel.items;
-        if ($('#main-carousel').hasClass('flickity-enabled')) {
-            $('#main-carousel').flickity('destroy');
-            $('#main-carousel').html('');
-        }
-        
-        for (let index = 0; index < panels.length; index++) {
-            const panel = panels[index];
-
-            let columns = panel.columns; // 3 cells per row
-            let html = `<table class="table table-borderless"><tr>`;
-            let items = panel.items;
-            console.log(items);
-
-            // Loop through array and add table cells
-            for (var i=0; i<items.length; i++) {
-                html += `<td><button class="deck-btn js-deck-action" data-action="${items[i].action}"> ${items[i].id} </button></td>`;
-
-                // If you need to click on the cell and do something
-                // html += "<td onclick='FUNCTION()'>" + data[i] + "</td>";
-            
-                // Break into next row
-                var next = i+1;
-                if (next%columns==0 && next!=items.length) {
-                html += "</tr><tr>";
-                }
+    if (url !="") {
+        $.ajax({
+            dataType: "json",
+            url: url
+        }).done(function(data){
+            let panels = data.panel.items;
+            if ($('#main-carousel').hasClass('flickity-enabled')) {
+                $('#main-carousel').flickity('destroy');
+                $('#main-carousel').html('');
             }
-            html += "</tr></table>";
-            $("#main-carousel").append(`<div class="carousel-cell"><h3>${panel.title}</h3> ${html} </div>`);
+            
+            for (let index = 0; index < panels.length; index++) {
+                const panel = panels[index];
 
-        }
-        $('#main-carousel').flickity({
-            // options
-            freeScroll: false,
-            wrapAround: true,
-            prevNextButtons: false
+                let columns = panel.columns; // 3 cells per row
+                let html = `<table class="table table-borderless"><tr>`;
+                let items = panel.items;
+                console.log(items);
+
+                // Loop through array and add table cells
+                for (var i=0; i<items.length; i++) {
+                    html += `<td><button class="deck-btn js-deck-action" data-action="${items[i].action}"> ${items[i].id} </button></td>`;
+
+                    // If you need to click on the cell and do something
+                    // html += "<td onclick='FUNCTION()'>" + data[i] + "</td>";
+                
+                    // Break into next row
+                    var next = i+1;
+                    if (next%columns==0 && next!=items.length) {
+                    html += "</tr><tr>";
+                    }
+                }
+                html += "</tr></table>";
+                $("#main-carousel").append(`<div class="carousel-cell"><h3>${panel.title}</h3> ${html} </div>`);
+
+            }
+            $('#main-carousel').flickity({
+                // options
+                freeScroll: false,
+                wrapAround: true,
+                prevNextButtons: false
+            });
         });
-    });
+    } else {
+        $('#main-carousel').html("URL is empty");
+    }
 }
 
 $(".js-scan-qrcode").click(function(e){
