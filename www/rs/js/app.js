@@ -20,13 +20,13 @@ var barcodeScannerOptions = {
 };
 var physicalScreenWidth = window.screen.width * window.devicePixelRatio;
 var physicalScreenHeight = window.screen.height * window.devicePixelRatio;
-var server_url = 'https://google.com';
+var base_server_url = '';
 
 function load_panel(url = "") {
     if (url !="") {
         $.ajax({
             dataType: "json",
-            url: url
+            url: url  + 'deckboard.php'
         }).done(function(data){
             let panels = data.panel.items;
             if ($('#main-carousel').hasClass('flickity-enabled')) {
@@ -44,7 +44,7 @@ function load_panel(url = "") {
 
                 // Loop through array and add table cells
                 for (var i=0; i<items.length; i++) {
-                    html += `<td><button class="deck-btn js-deck-action" data-action="${items[i].action}"> ${items[i].id} </button></td>`;
+                    html += `<td><button class="deck-btn js-deck-action" data-action="${items[i].action}" data-cmd="${items[i].cmd}"> ${items[i].id} </button></td>`;
 
                     // If you need to click on the cell and do something
                     // html += "<td onclick='FUNCTION()'>" + data[i] + "</td>";
@@ -76,15 +76,14 @@ $(".js-scan-qrcode").click(function(e){
 
     cordova.plugins.barcodeScanner.scan(
         function (result) {
-            target_url = result.text;
-            load_panel(target_url);
+            base_server_url = result.text;
+            load_panel(base_server_url);
         },
         function (error) {
             alert("Scanning failed: " + error);
         },
         barcodeScannerOptions
     );
-    //alert(target_url);
 });
 
 $(document).on("click", ".js-show-device-info", function(e){
@@ -103,7 +102,16 @@ $(document).on("click", ".js-show-device-info", function(e){
 
 $(document).on("click", ".js-deck-action", function(e){
     let action = $(this).attr("data-action");
-    console.log(action);
+    let cmd = $(this).attr("data-cmd");
+    console.log(action, cmd);
+    
+    $.post(base_server_url + "deckaction.php", {
+        action : action,
+        cmd : cmd
+    }, function(data, status){
+        var response = jQuery.parseJSON(data);
+        bootbox.alert("Data: " + response.data.message + "\nStatus: " + status);
+    });
 });
 
 
