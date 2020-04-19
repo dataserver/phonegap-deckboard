@@ -39,6 +39,7 @@
 
     function load_panel(url = "") {
         if (url != "") {
+            base_server_url = url;
             $.ajax({
                 // dataType: "json",
                 url: url + '/deckpanel.php'
@@ -104,7 +105,6 @@
         let target_url = null;
 
         if (cordova.plugins === undefined) {
-            console.log(cordova.plugins);
             load_panel('http://192.168.15.10');
         } else {
             cordova.plugins.barcodeScanner.scan(
@@ -118,7 +118,9 @@
                 barcodeScannerOptions
             );
         }
+        $("#reload-link").show();
     });
+    
 
     $(document).on("click", ".js-show-device-info", function (e) {
 
@@ -131,6 +133,10 @@
         <br>
     `;
         bootbox.alert(message);
+    });
+
+    $(document).on("click", ".js-reload", function (e) {
+        load_panel(base_server_url);
     });
 
 
