@@ -41,7 +41,7 @@
         if (url != "") {
             base_server_url = url;
             $.ajax({
-                // dataType: "json",
+                dataType: "json",
                 url: url + '/deckpanel.php'
             }).done(function (response) {
                 let panels = response.data.items;
@@ -146,10 +146,11 @@
         console.log(action, cmd);
 
         $.post(base_server_url + "/deckaction.php", {
+            dataType: "json",
             action: action,
             cmd: cmd
-        }, function (data, status) {
-            var response = jQuery.parseJSON(data);
+        }, function (response, status) {
+            // var response = jQuery.parseJSON(data);
             bootbox.alert("Data: " + response.data.message + "\nStatus: " + status);
         });
     });
