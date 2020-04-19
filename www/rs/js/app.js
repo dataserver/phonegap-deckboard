@@ -150,8 +150,7 @@
             action: action,
             cmd: cmd
         }, function (response, status) {
-            // var response = jQuery.parseJSON(data);
-            bootbox.alert("Data: " + response.data.message + "\nStatus: " + status);
+            bootbox.alert("Data: " + response.data.message + "<br>Status: " + status);
         });
     });
 
