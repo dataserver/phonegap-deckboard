@@ -1,94 +1,101 @@
-(function() {
+(function () {
 
-function backMain() {
-    window.history.back();
-}
-
-
-var barcodeScannerOptions = {
-    preferFrontCamera : false,                       // iOS and Android
-    showFlipCameraButton : false,                    // iOS and Android
-    showTorchButton : true,                          // iOS and Android
-    torchOn: false,                                  // Android, launch with the torch switched on (if available)
-    saveHistory: false,                              // Android, save scan history (default false)
-    prompt : "Place QR code inside the scan area",   // Android
-    resultDisplayDuration: 0,                        // Android, display scanned text for X ms. 0 suppresses it entirely, default 1500
-    formats : "QR_CODE",                             // default: all but PDF_417 and RSS_EXPANDED
-    //orientation : "portrait",                        // Android only (portrait|landscape), default unset so it rotates with the device
-    disableAnimations : true,                        // iOS
-    disableSuccessBeep: false                        // iOS and Android
-};
-var physicalScreenWidth = window.screen.width * window.devicePixelRatio;
-var physicalScreenHeight = window.screen.height * window.devicePixelRatio;
-var base_server_url = '';
-
-function load_panel(url = "") {
-    if (url !="") {
-        $.ajax({
-            dataType: "json",
-            url: url  + 'deckboard.php'
-        }).done(function(data){
-            let panels = data.panel.items;
-            if ($('#main-carousel').hasClass('flickity-enabled')) {
-                $('#main-carousel').flickity('destroy');
-                $('#main-carousel').html('');
-            }
-            
-            for (let index = 0; index < panels.length; index++) {
-                const panel = panels[index];
-
-                let columns = panel.columns; // 3 cells per row
-                let html = `<table class="table table-borderless"><tr>`;
-                let items = panel.items;
-                console.log(items);
-
-                // Loop through array and add table cells
-                for (var i=0; i<items.length; i++) {
-                    html += `<td><button class="deck-btn js-deck-action" data-action="${items[i].action}" data-cmd="${items[i].cmd}"> ${items[i].id} </button></td>`;
-
-                    // If you need to click on the cell and do something
-                    // html += "<td onclick='FUNCTION()'>" + data[i] + "</td>";
-                
-                    // Break into next row
-                    var next = i+1;
-                    if (next%columns==0 && next!=items.length) {
-                    html += "</tr><tr>";
-                    }
-                }
-                html += "</tr></table>";
-                $("#main-carousel").append(`<div class="carousel-cell"><h3>${panel.title}</h3> ${html} </div>`);
-
-            }
-            $('#main-carousel').flickity({
-                // options
-                freeScroll: false,
-                wrapAround: true,
-                prevNextButtons: false
-            });
-        });
-    } else {
-        $('#main-carousel').html("URL is empty");
+    function backMain() {
+        window.history.back();
     }
-}
 
-$(".js-scan-qrcode").click(function(e){
-    let target_url = null;
 
-    cordova.plugins.barcodeScanner.scan(
-        function (result) {
-            base_server_url = result.text;
-            load_panel(base_server_url);
-        },
-        function (error) {
-            alert("Scanning failed: " + error);
-        },
-        barcodeScannerOptions
-    );
-});
+    var barcodeScannerOptions = {
+        preferFrontCamera: false, // iOS and Android
+        showFlipCameraButton: false, // iOS and Android
+        showTorchButton: true, // iOS and Android
+        torchOn: false, // Android, launch with the torch switched on (if available)
+        saveHistory: false, // Android, save scan history (default false)
+        prompt: "Place QR code inside the scan area", // Android
+        resultDisplayDuration: 0, // Android, display scanned text for X ms. 0 suppresses it entirely, default 1500
+        formats: "QR_CODE", // default: all but PDF_417 and RSS_EXPANDED
+        //orientation : "portrait",                        // Android only (portrait|landscape), default unset so it rotates with the device
+        disableAnimations: true, // iOS
+        disableSuccessBeep: false // iOS and Android
+    };
+    var physicalScreenWidth = window.screen.width * window.devicePixelRatio;
+    var physicalScreenHeight = window.screen.height * window.devicePixelRatio;
+    var base_server_url = '';
 
-$(document).on("click", ".js-show-device-info", function(e){
+    function load_panel(url = "") {
+        if (url != "") {
+            $.ajax({
+                dataType: "json",
+                url: url + 'deckboard.php'
+            }).done(function (data) {
+                let panels = data.panel.items;
+                if ($('#main-carousel').hasClass('flickity-enabled')) {
+                    $('#main-carousel').flickity('destroy');
+                    $('#main-carousel').html('');
+                }
 
-    let message = `
+                // for (let index = 0; index < panels.length; index++) {
+                //     const panel = panels[index];
+                //     let columns = panel.columns; // 3 cells per row
+                //     let html = `<table class="table table-borderless"><tr>`;
+                //     let items = panel.items;
+                //     console.log(items);
+                //     // Loop through array and add table cells
+                //     for (var i=0; i<items.length; i++) {
+                //         html += `<td><button class="deck-btn js-deck-action" data-action="${items[i].action}" data-cmd="${items[i].cmd}"> ${items[i].id} </button></td>`;
+                //         // If you need to click on the cell and do something
+                //         // html += "<td onclick='FUNCTION()'>" + data[i] + "</td>";                
+                //         // Break into next row
+                //         var next = i+1;
+                //         if (next%columns==0 && next!=items.length) {
+                //         html += "</tr><tr>";
+                //         }
+                //     }
+                //     html += "</tr></table>";
+                //     $("#main-carousel").append(`<div class="carousel-cell"><h3>${panel.title}</h3> ${html} </div>`);
+                // }
+
+                for (let index = 0; index < panels.length; index++) {
+                    const panel = panels[index];
+                    let items = panel.items;
+                    let html = `<div class="box-wrapper">`;
+                    for (var i = 0; i < items.length; i++) {
+                        html += `<div class="box"><button class="deck-btn js-deck-action" data-action="${items[i].action}" data-cmd="${items[i].cmd}"> ${items[i].id} </button></div>`;
+                    }
+                    html = `</div>`;
+                    $("#main-carousel").append(`<div class="carousel-cell"><h3>${panel.title}</h3> ${html} </div>`);
+                }
+                
+                $('#main-carousel').flickity({
+                    // options
+                    freeScroll: false,
+                    wrapAround: true,
+                    prevNextButtons: false
+                });
+            });
+        } else {
+            $('#main-carousel').html("URL is empty");
+        }
+    }
+
+    $(".js-scan-qrcode").click(function (e) {
+        let target_url = null;
+
+        cordova.plugins.barcodeScanner.scan(
+            function (result) {
+                base_server_url = result.text;
+                load_panel(base_server_url);
+            },
+            function (error) {
+                alert("Scanning failed: " + error);
+            },
+            barcodeScannerOptions
+        );
+    });
+
+    $(document).on("click", ".js-show-device-info", function (e) {
+
+        let message = `
         physicalScreenWidth: ${physicalScreenWidth}
         <br>
         physicalScreenHeight: ${physicalScreenHeight}
@@ -96,23 +103,23 @@ $(document).on("click", ".js-show-device-info", function(e){
         devicePixelRatio : ${window.devicePixelRatio}
         <br>
     `;
-    bootbox.alert(message);
-});
-
-
-$(document).on("click", ".js-deck-action", function(e){
-    let action = $(this).attr("data-action");
-    let cmd = $(this).attr("data-cmd");
-    console.log(action, cmd);
-    
-    $.post(base_server_url + "deckaction.php", {
-        action : action,
-        cmd : cmd
-    }, function(data, status){
-        var response = jQuery.parseJSON(data);
-        bootbox.alert("Data: " + response.data.message + "\nStatus: " + status);
+        bootbox.alert(message);
     });
-});
+
+
+    $(document).on("click", ".js-deck-action", function (e) {
+        let action = $(this).attr("data-action");
+        let cmd = $(this).attr("data-cmd");
+        console.log(action, cmd);
+
+        $.post(base_server_url + "deckaction.php", {
+            action: action,
+            cmd: cmd
+        }, function (data, status) {
+            var response = jQuery.parseJSON(data);
+            bootbox.alert("Data: " + response.data.message + "\nStatus: " + status);
+        });
+    });
 
 
 
