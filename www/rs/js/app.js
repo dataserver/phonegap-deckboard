@@ -26,7 +26,7 @@
         if (url != "") {
             $.ajax({
                 dataType: "json",
-                url: url + 'deckboard.php'
+                url: url + '/deckboard.php'
             }).done(function (data) {
                 let panels = data.panel.items;
                 if ($('#main-carousel').hasClass('flickity-enabled')) {
@@ -60,9 +60,9 @@
                     let items = panel.items;
                     let html = `<div class="box-wrapper">`;
                     for (var i = 0; i < items.length; i++) {
-                        html += `<div class="box"><button class="deck-btn js-deck-action" data-action="${items[i].action}" data-cmd="${items[i].cmd}"> ${items[i].id} </button></div>`;
+                        html += `<div class="box js-deck-action" data-action="${items[i].action}" data-cmd="${items[i].cmd}"><span class="deck-btn"> ${items[i].id} </span></div>`;
                     }
-                    html = `</div>`;
+                    html += `</div>`;
                     $("#main-carousel").append(`<div class="carousel-cell"><h3>${panel.title}</h3> ${html} </div>`);
                 }
                 
@@ -81,16 +81,21 @@
     $(".js-scan-qrcode").click(function (e) {
         let target_url = null;
 
-        cordova.plugins.barcodeScanner.scan(
-            function (result) {
-                base_server_url = result.text;
-                load_panel(base_server_url);
-            },
-            function (error) {
-                alert("Scanning failed: " + error);
-            },
-            barcodeScannerOptions
-        );
+        if (cordova.plugins === undefined){
+            console.log(cordova.plugins);
+            load_panel('http://192.168.15.10');
+        } else {
+            cordova.plugins.barcodeScanner.scan(
+                function (result) {
+                    base_server_url = result.text;
+                    load_panel(base_server_url);
+                },
+                function (error) {
+                    alert("Scanning failed: " + error);
+                },
+                barcodeScannerOptions
+            );
+        }
     });
 
     $(document).on("click", ".js-show-device-info", function (e) {
@@ -112,7 +117,7 @@
         let cmd = $(this).attr("data-cmd");
         console.log(action, cmd);
 
-        $.post(base_server_url + "deckaction.php", {
+        $.post(base_server_url + "/deckaction.php", {
             action: action,
             cmd: cmd
         }, function (data, status) {

@@ -1,8 +1,15 @@
+main {
+    margin-top: 70px;
+    height: calc(100vh - 110px);
+}
+.main-carousel {
+    height: 100%;
+}
 .carousel-cell {
     width: 84%;
-    height: 80vh;
+    height: 100%;
     margin-right: 10px;
-    background: rgb(224, 224, 224);
+    background: rgb(245, 245, 245);
     border-radius: 5px;
     padding: 40px;
     counter-increment: gallery-cell;
@@ -26,13 +33,15 @@
     margin-right: -5px;
 }
 .box {
-    display: inline-flex;
+    /* display: inline-flex;
     justify-content: center;
-    align-items: center;
+    align-items: center; */
     height: 85px;
     width: 85px;
-    background-color: #ccc;
-    margin: 5px 5px;
+    background-color: rgba(39, 250, 11, 0.795);
+    margin: 15px;
+    padding: 15px;
+    cursor: pointer;
 }
 
 /* deck button */
