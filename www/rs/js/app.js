@@ -21,58 +21,80 @@
     var physicalScreenWidth = window.screen.width * window.devicePixelRatio;
     var physicalScreenHeight = window.screen.height * window.devicePixelRatio;
     var base_server_url = '';
+    var loaded_panels = [];
+
+    function createPromise( index, base_url ) {
+        return $.Deferred(function( promise ) {
+            $.ajax({
+                type: "GET",
+                url: base_url,
+                success: function (text) {
+                    loaded_panels[index] = text;
+                    // $("#main-carousel").append(`<div class="carousel-cell"> ${text}</div>`);
+                    promise.resolve();
+                }
+            });
+        }).promise();
+    }
 
     function load_panel(url = "") {
         if (url != "") {
             $.ajax({
-                dataType: "json",
-                url: url + '/deckboard.php'
-            }).done(function (data) {
-                let panels = data.panel.items;
+                // dataType: "json",
+                url: url + '/deckpanel.php'
+            }).done(function (response) {
+                let panels = response.data.items;
                 if ($('#main-carousel').hasClass('flickity-enabled')) {
                     $('#main-carousel').flickity('destroy');
                     $('#main-carousel').html('');
                 }
-
-                // for (let index = 0; index < panels.length; index++) {
-                //     const panel = panels[index];
-                //     let columns = panel.columns; // 3 cells per row
-                //     let html = `<table class="table table-borderless"><tr>`;
-                //     let items = panel.items;
-                //     console.log(items);
-                //     // Loop through array and add table cells
-                //     for (var i=0; i<items.length; i++) {
-                //         html += `<td><button class="deck-btn js-deck-action" data-action="${items[i].action}" data-cmd="${items[i].cmd}"> ${items[i].id} </button></td>`;
-                //         // If you need to click on the cell and do something
-                //         // html += "<td onclick='FUNCTION()'>" + data[i] + "</td>";                
-                //         // Break into next row
-                //         var next = i+1;
-                //         if (next%columns==0 && next!=items.length) {
-                //         html += "</tr><tr>";
-                //         }
-                //     }
-                //     html += "</tr></table>";
-                //     $("#main-carousel").append(`<div class="carousel-cell"><h3>${panel.title}</h3> ${html} </div>`);
-                // }
-
+                var myPromises = [];
                 for (let index = 0; index < panels.length; index++) {
-                    const panel = panels[index];
-                    let items = panel.items;
-                    let html = `<div class="box-wrapper">`;
-                    for (var i = 0; i < items.length; i++) {
-                        html += `<div class="box js-deck-action" data-action="${items[i].action}" data-cmd="${items[i].cmd}"><span class="deck-btn"> ${items[i].id} </span></div>`;
-                    }
-                    html += `</div>`;
-                    $("#main-carousel").append(`<div class="carousel-cell"><h3>${panel.title}</h3> ${html} </div>`);
+                    myPromises.push( createPromise( index, `${url}/deckpanel.php?panel=${index}`) );
                 }
-                
-                $('#main-carousel').flickity({
-                    // options
-                    freeScroll: false,
-                    wrapAround: true,
-                    prevNextButtons: false
+                $.when.apply( null, myPromises ).done( function() {
+
+                    for (let index = 0; index < loaded_panels.length; index++) {
+                        const text = loaded_panels[index];
+                        $("#main-carousel").append(`<div class="carousel-cell"> ${text}</div>`);
+                    }
+                    $('#main-carousel').flickity({
+                        // options
+                        freeScroll: false,
+                        wrapAround: true,
+                        prevNextButtons: false
+                    });
                 });
             });
+
+            // $.ajax({
+            //     dataType: "json",
+            //     url: url + '/deckboard.php'
+            // }).done(function (data) {
+            //     let panels = data.panel.items;
+            //     if ($('#main-carousel').hasClass('flickity-enabled')) {
+            //         $('#main-carousel').flickity('destroy');
+            //         $('#main-carousel').html('');
+            //     }
+
+            //     for (let index = 0; index < panels.length; index++) {
+            //         const panel = panels[index];
+            //         let items = panel.items;
+            //         let html = `<div class="box-wrapper">`;
+            //         for (var i = 0; i < items.length; i++) {
+            //             html += `<div class="box js-deck-action" data-action="${items[i].action}" data-cmd="${items[i].cmd}"><span class="deck-btn"> ${items[i].html} </span></div>`;
+            //         }
+            //         html += `</div>`;
+            //         $("#main-carousel").append(`<div class="carousel-cell"><h3>${panel.title}</h3> ${html} </div>`);
+            //     }
+
+            //     $('#main-carousel').flickity({
+            //         // options
+            //         freeScroll: false,
+            //         wrapAround: true,
+            //         prevNextButtons: false
+            //     });
+            // });
         } else {
             $('#main-carousel').html("URL is empty");
         }
@@ -81,7 +103,7 @@
     $(".js-scan-qrcode").click(function (e) {
         let target_url = null;
 
-        if (cordova.plugins === undefined){
+        if (cordova.plugins === undefined) {
             console.log(cordova.plugins);
             load_panel('http://192.168.15.10');
         } else {
