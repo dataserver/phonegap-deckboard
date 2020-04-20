@@ -20,84 +20,13 @@
     };
     var physicalScreenWidth = window.screen.width * window.devicePixelRatio;
     var physicalScreenHeight = window.screen.height * window.devicePixelRatio;
-    var base_server_url = '';
-    var loaded_panels = [];
-
-    function createPromise( index, base_url ) {
-        return $.Deferred(function( promise ) {
-            $.ajax({
-                type: "GET",
-                url: base_url,
-                success: function (text) {
-                    loaded_panels[index] = text;
-                    // $("#main-carousel").append(`<div class="carousel-cell"> ${text}</div>`);
-                    promise.resolve();
-                }
-            });
-        }).promise();
-    }
 
     function load_panel(url = "") {
         if (url != "") {
             base_server_url = url;
-            $.ajax({
-                dataType: "json",
-                url: url + '/deckpanel.php'
-            }).done(function (response) {
-                let panels = response.data.items;
-                if ($('#main-carousel').hasClass('flickity-enabled')) {
-                    $('#main-carousel').flickity('destroy');
-                    $('#main-carousel').html('');
-                }
-                var myPromises = [];
-                for (let index = 0; index < panels.length; index++) {
-                    myPromises.push( createPromise( index, `${url}/deckpanel.php?panel=${index}`) );
-                }
-                $.when.apply( null, myPromises ).done( function() {
-
-                    for (let index = 0; index < loaded_panels.length; index++) {
-                        const text = loaded_panels[index];
-                        $("#main-carousel").append(`<div class="carousel-cell"> ${text}</div>`);
-                    }
-                    $('#main-carousel').flickity({
-                        // options
-                        freeScroll: false,
-                        wrapAround: true,
-                        prevNextButtons: false
-                    });
-                });
-            });
-
-            // $.ajax({
-            //     dataType: "json",
-            //     url: url + '/deckboard.php'
-            // }).done(function (data) {
-            //     let panels = data.panel.items;
-            //     if ($('#main-carousel').hasClass('flickity-enabled')) {
-            //         $('#main-carousel').flickity('destroy');
-            //         $('#main-carousel').html('');
-            //     }
-
-            //     for (let index = 0; index < panels.length; index++) {
-            //         const panel = panels[index];
-            //         let items = panel.items;
-            //         let html = `<div class="box-wrapper">`;
-            //         for (var i = 0; i < items.length; i++) {
-            //             html += `<div class="box js-deck-action" data-action="${items[i].action}" data-cmd="${items[i].cmd}"><span class="deck-btn"> ${items[i].html} </span></div>`;
-            //         }
-            //         html += `</div>`;
-            //         $("#main-carousel").append(`<div class="carousel-cell"><h3>${panel.title}</h3> ${html} </div>`);
-            //     }
-
-            //     $('#main-carousel').flickity({
-            //         // options
-            //         freeScroll: false,
-            //         wrapAround: true,
-            //         prevNextButtons: false
-            //     });
-            // });
+            $("#main").html(`<iframe src="${url}"></iframe>`);
         } else {
-            $('#main-carousel').html("URL is empty");
+            $("#main").html(`<iframe src="qr_error.html"></iframe>`);
         }
     }
 
@@ -105,7 +34,7 @@
         let target_url = null;
 
         if (cordova.plugins === undefined) {
-            load_panel('http://192.168.15.10');
+            load_panel('http://192.168.15.10/deckboard.php');
         } else {
             cordova.plugins.barcodeScanner.scan(
                 function (result) {
@@ -138,22 +67,6 @@
     $(document).on("click", ".js-reload", function (e) {
         load_panel(base_server_url);
     });
-
-
-    $(document).on("click", ".js-deck-action", function (e) {
-        let action = $(this).attr("data-action");
-        let cmd = $(this).attr("data-cmd");
-        console.log(action, cmd);
-
-        $.post(base_server_url + "/deckaction.php", {
-            dataType: "json",
-            action: action,
-            cmd: cmd
-        }, function (response, status) {
-            bootbox.alert("Data: " + response.data.message + "<br>Status: " + status);
-        });
-    });
-
 
 
 })(window);
